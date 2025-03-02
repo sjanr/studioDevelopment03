@@ -226,8 +226,8 @@ Transform:
   m_GameObject: {fileID: 260927213}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.6209, y: 0.049198, z: -2.8636}
-  m_LocalScale: {x: 2.0479794, y: 2.0479794, z: 2.0479794}
+  m_LocalPosition: {x: -2.8871, y: -1.696, z: -1.7707}
+  m_LocalScale: {x: 3.1160007, y: 3.1160007, z: 3.1160007}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 279076077}
@@ -1556,6 +1556,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputManager: {fileID: 1505414462}
   speed: 8
+  jumpForce: 5
   freeLookCamera: {fileID: 674719551}
 --- !u!136 &1225123757
 CapsuleCollider:
@@ -1577,9 +1578,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.17201614
-  m_Height: 0.6899891
+  m_Height: 0.6995492
   m_Direction: 1
-  m_Center: {x: 0.27240086, y: 0.0010204315, z: 0}
+  m_Center: {x: 0.27240086, y: -0.0037596226, z: 0}
 --- !u!54 &1225123758
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1897,7 +1898,7 @@ GameObject:
   - component: {fileID: 1989904798}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1986,8 +1987,8 @@ Transform:
   m_GameObject: {fileID: 1989904797}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.1582, y: 3.4, z: -4.9316}
-  m_LocalScale: {x: 1.146239, y: 0.33055532, z: 1.0912182}
+  m_LocalPosition: {x: -2.1831, y: 3.4022, z: -4.9171}
+  m_LocalScale: {x: 1.7440027, y: 0.50293994, z: 1.6602886}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

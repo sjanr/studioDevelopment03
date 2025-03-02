@@ -5,11 +5,16 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed;
+    [SerializeField] private float jumpForce = 10f;
     [SerializeField] private CinemachineCamera freeLookCamera;
     private Rigidbody rb;
+    private bool isGrounded = true; // To track grounded status
+    private bool isJumping = false; // To prevent double jump logic
+
     void Start()
     {
         inputManager.OnMove.AddListener(MovePlayer);
+        inputManager.OnSpacePressed.AddListener(Jump); // Listen for space press to trigger jump
         rb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -18,7 +23,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         transform.forward = freeLookCamera.transform.forward;
-        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y,0);
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+        // Debugging: check if the player is grounded
+        Debug.Log($"Is Grounded: {isGrounded}");
     }
 
     private void MovePlayer(Vector2 direction)
@@ -44,10 +52,34 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Jump logic
+    private void Jump()
+    {
+        if (isGrounded && !isJumping) // Only jump if grounded and not already jumping
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isJumping = true; // Prevent double jumping
+            isGrounded = false; // Player is now in the air
+        }
+    }
 
+    // Detect ground collision with a more robust method
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true; // Set grounded status when player touches the ground
+            isJumping = false; // Reset jumping status when grounded again
+            Debug.Log("Player is grounded!");
+        }
+    }
 
-
-
-
-
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false; // Set grounded status to false when player leaves the ground
+            Debug.Log("Player left the ground!");
+        }
+    }
 }
