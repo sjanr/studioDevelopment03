@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     {
         inputManager.OnMove.AddListener(MovePlayer);
         rb = GetComponent<Rigidbody>();
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -20,33 +22,31 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MovePlayer(Vector2 direction)
-{
-    // Get the camera's forward direction and right direction
-    Vector3 cameraForward = freeLookCamera.transform.forward;
-    Vector3 cameraRight = freeLookCamera.transform.right;
-
-    // Ignore the y-axis for the forward and right vectors (we only want horizontal movement)
-    cameraForward.y = 0;
-    cameraRight.y = 0;
-
-    // Normalize the vectors
-    cameraForward.Normalize();
-    cameraRight.Normalize();
-
-    // Calculate the movement direction based on the camera's orientation
-    Vector3 moveDirection = cameraForward * direction.y + cameraRight * direction.x;
-
-    // Check if the moveDirection has a valid magnitude
-    if (moveDirection.sqrMagnitude > 0.01f)
     {
-        // Apply the movement force (ensure we are applying the correct force mode)
-        rb.AddForce(moveDirection * speed, ForceMode.Force);
+        Vector3 cameraForward = freeLookCamera.transform.forward;
+        Vector3 cameraRight = freeLookCamera.transform.right;
+
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        Vector3 moveDirection = (cameraForward * direction.y + cameraRight * direction.x).normalized;
+
+        if (moveDirection.sqrMagnitude > 0.01f)
+        {
+            Vector3 targetVelocity = moveDirection * speed;
+            Vector3 velocityChange = targetVelocity - rb.linearVelocity;
+
+            // Apply gradual force for smoother movement
+            rb.AddForce(velocityChange, ForceMode.Acceleration);
+        }
     }
 
-    // Debugging logs
-    Debug.Log($"Move Direction: {moveDirection}");
-    Debug.Log($"Direction: {direction}");
-}
+
+
+
 
 
 
