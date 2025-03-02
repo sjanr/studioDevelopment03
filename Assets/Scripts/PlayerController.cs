@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CinemachineCamera freeLookCamera;
     private Rigidbody rb;
     private bool isGrounded = true; // To track grounded status
-    private bool isJumping = false; // To prevent double jump logic
+    private bool hasDoubleJumped = false; // Track if player has already used double jump
 
     void Start()
     {
@@ -55,11 +55,18 @@ public class PlayerController : MonoBehaviour
     // Jump logic
     private void Jump()
     {
-        if (isGrounded && !isJumping) // Only jump if grounded and not already jumping
+        if (isGrounded)
         {
+            // Jump if grounded
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isJumping = true; // Prevent double jumping
             isGrounded = false; // Player is now in the air
+            hasDoubleJumped = false; // Reset double jump when grounded
+        }
+        else if (!hasDoubleJumped)
+        {
+            // Double jump if not grounded and hasn't double jumped yet
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            hasDoubleJumped = true; // Set the double jump flag
         }
     }
 
@@ -69,7 +76,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true; // Set grounded status when player touches the ground
-            isJumping = false; // Reset jumping status when grounded again
+            hasDoubleJumped = false; // Reset double jump flag when grounded again
             Debug.Log("Player is grounded!");
         }
     }
