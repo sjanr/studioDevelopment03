@@ -8,13 +8,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private CinemachineCamera freeLookCamera;
     private Rigidbody rb;
-    private bool isGrounded = true; // To track grounded status
-    private bool hasDoubleJumped = false; // Track if player has already used double jump
+    private bool isGrounded = true;
+    private bool hasDoubleJumped = false;
 
     void Start()
     {
         inputManager.OnMove.AddListener(MovePlayer);
-        inputManager.OnSpacePressed.AddListener(Jump); // Listen for space press to trigger jump
+        inputManager.OnSpacePressed.AddListener(Jump);
         rb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -24,9 +24,6 @@ public class PlayerController : MonoBehaviour
     {
         transform.forward = freeLookCamera.transform.forward;
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-
-        // Debugging: check if the player is grounded
-        Debug.Log($"Is Grounded: {isGrounded}");
     }
 
     private void MovePlayer(Vector2 direction)
@@ -59,14 +56,14 @@ public class PlayerController : MonoBehaviour
         {
             // Jump if grounded
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            isGrounded = false; // Player is now in the air
-            hasDoubleJumped = false; // Reset double jump when grounded
+            isGrounded = false;
+            hasDoubleJumped = false;
         }
         else if (!hasDoubleJumped)
         {
-            // Double jump if not grounded and hasn't double jumped yet
+            // Double jump
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            hasDoubleJumped = true; // Set the double jump flag
+            hasDoubleJumped = true;
         }
     }
 
@@ -75,9 +72,8 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            isGrounded = true; // Set grounded status when player touches the ground
-            hasDoubleJumped = false; // Reset double jump flag when grounded again
-            Debug.Log("Player is grounded!");
+            isGrounded = true;
+            hasDoubleJumped = false;
         }
     }
 
@@ -85,8 +81,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            isGrounded = false; // Set grounded status to false when player leaves the ground
-            Debug.Log("Player left the ground!");
+            isGrounded = false;
         }
     }
 }
