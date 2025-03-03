@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CoinRotation : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeed = 100f; // Speed of rotation
+    [SerializeField] private float rotationSpeed = 120f; // Speed of rotation
 
     void Update()
     {
