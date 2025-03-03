@@ -1,14 +1,13 @@
-using TMPro; // Import TextMeshPro namespace
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private int score = 0; // Current score
+    [SerializeField] private int score = 0;
     [SerializeField] private TextMeshProUGUI scoreText; // Reference to the TextMeshProUGUI component
 
     void Start()
     {
-        // Initialize the score text when the game starts
         UpdateScoreText();
     }
 
@@ -16,12 +15,12 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
-        UpdateScoreText(); // Update the score text after adding the score
+        UpdateScoreText();
     }
 
     // Update the score text UI
     private void UpdateScoreText()
     {
-        scoreText.text = "Score: " + score.ToString(); // Update text with current score
+        scoreText.text = "Score: " + score.ToString();
     }
 }

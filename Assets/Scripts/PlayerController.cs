@@ -6,9 +6,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce = 5f;
-    [SerializeField] private float dashForce = 10f; // Dash force
-    [SerializeField] private float dashDuration = 0.2f; // Duration of dash
-    [SerializeField] private float dashCooldown = 1f; // Cooldown for dash
+    [SerializeField] private float dashForce = 10f;
+    [SerializeField] private float dashDuration = 0.2f;
+    [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private CinemachineCamera freeLookCamera;
     
     private Rigidbody rb;
