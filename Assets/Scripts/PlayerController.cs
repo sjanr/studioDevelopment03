@@ -5,11 +5,17 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputManager inputManager;
     [SerializeField] private float speed;
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float dashForce = 10f; // Dash force
+    [SerializeField] private float dashDuration = 0.2f; // Duration of dash
+    [SerializeField] private float dashCooldown = 1f; // Cooldown for dash
     [SerializeField] private CinemachineCamera freeLookCamera;
+    
     private Rigidbody rb;
     private bool isGrounded = true;
     private bool hasDoubleJumped = false;
+    private bool isDashing = false;
+    private float dashTime = 0f;
 
     void Start()
     {
@@ -24,32 +30,46 @@ public class PlayerController : MonoBehaviour
     {
         transform.forward = freeLookCamera.transform.forward;
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+        // Dash logic
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && dashTime <= 0f)
+        {
+            StartDash();
+        }
+
+        // Update dash cooldown timer
+        if (dashTime > 0f)
+        {
+            dashTime -= Time.deltaTime;
+        }
     }
 
     private void MovePlayer(Vector2 direction)
     {
-        Vector3 cameraForward = freeLookCamera.transform.forward;
-        Vector3 cameraRight = freeLookCamera.transform.right;
-
-        cameraForward.y = 0;
-        cameraRight.y = 0;
-
-        cameraForward.Normalize();
-        cameraRight.Normalize();
-
-        Vector3 moveDirection = (cameraForward * direction.y + cameraRight * direction.x).normalized;
-
-        if (moveDirection.sqrMagnitude > 0.01f)
+        if (!isDashing) // Prevent movement while dashing
         {
-            Vector3 targetVelocity = moveDirection * speed;
-            Vector3 velocityChange = targetVelocity - rb.linearVelocity;
+            Vector3 cameraForward = freeLookCamera.transform.forward;
+            Vector3 cameraRight = freeLookCamera.transform.right;
 
-            // Apply gradual force for smoother movement
-            rb.AddForce(velocityChange, ForceMode.Acceleration);
+            cameraForward.y = 0;
+            cameraRight.y = 0;
+
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+
+            Vector3 moveDirection = (cameraForward * direction.y + cameraRight * direction.x).normalized;
+
+            if (moveDirection.sqrMagnitude > 0.01f)
+            {
+                Vector3 targetVelocity = moveDirection * speed;
+                Vector3 velocityChange = targetVelocity - rb.linearVelocity;
+
+                // Apply gradual force for smoother movement
+                rb.AddForce(velocityChange, ForceMode.Acceleration);
+            }
         }
     }
 
-    // Jump logic
     private void Jump()
     {
         if (isGrounded)
@@ -67,7 +87,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Detect ground collision with a more robust method
+    private void StartDash()
+    {
+        isDashing = true;
+
+        // Calculate the dash direction based on camera orientation
+        Vector3 dashDirection = freeLookCamera.transform.forward;
+        dashDirection.y = 0; // Keep it horizontal
+        dashDirection.Normalize();
+
+        // Apply a large impulse in the dash direction
+        rb.AddForce(dashDirection * dashForce, ForceMode.Impulse);
+
+        // Set dash timer
+        dashTime = dashDuration;
+
+        // Reset the dash after a short duration
+        Invoke(nameof(EndDash), dashDuration);
+    }
+
+    private void EndDash()
+    {
+        isDashing = false;
+
+        // Start the cooldown period after dash
+        dashTime = dashCooldown;
+    }
+
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Ground"))
